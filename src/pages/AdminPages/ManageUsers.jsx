@@ -46,11 +46,11 @@
 //       const res = await fetch(`http://localhost:5000/admin/users/${email}`, {
 //         method: "DELETE",
 //       });
-  
+
 //       if (!res.ok) {
 //         throw new Error("Failed to delete user");
 //       }
-  
+
 //       setUsers(user.filter((u) => u.email !== email));
 //     } catch (error) {
 //       console.error("Error deleting user:", error);
@@ -119,13 +119,19 @@ import Sidebar from "../../components/admin/Sidebar";
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
-  const [editedData, setEditedData] = useState({ fullName: "", email: "", role: "" });
+  const [editedData, setEditedData] = useState({
+    fullName: "",
+    email: "",
+    role: "",
+  });
 
   useEffect(() => {
     fetch("https://zidio-task-management-backend.onrender.com/admin/users")
       .then((res) => res.json())
       .then((data) => {
-        const sortedUsers = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedUsers = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
         setUsers(sortedUsers);
       })
       .catch((err) => console.error("Error fetching users:", err));
@@ -133,7 +139,11 @@ const ManageUsers = () => {
 
   const startEditing = (user) => {
     setEditingUser(user.email);
-    setEditedData({ fullName: user.fullName, email: user.email, role: user.role });
+    setEditedData({
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+    });
   };
 
   const handleChange = (e) => {
@@ -142,15 +152,20 @@ const ManageUsers = () => {
 
   const saveUser = async (email) => {
     try {
-      const res = await fetch(`https://zidio-task-management-backend.onrender.com/admin/users/${email}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editedData),
-      });
+      const res = await fetch(
+        `https://zidio-task-management-backend.onrender.com/admin/users/${email}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(editedData),
+        },
+      );
 
       if (!res.ok) throw new Error("Failed to update user");
 
-      setUsers(users.map((u) => (u.email === email ? { ...u, ...editedData } : u)));
+      setUsers(
+        users.map((u) => (u.email === email ? { ...u, ...editedData } : u)),
+      );
       setEditingUser(null);
     } catch (error) {
       console.error("Error updating user:", error);
@@ -159,9 +174,12 @@ const ManageUsers = () => {
 
   const deleteUser = async (email) => {
     try {
-      const res = await fetch(`https://zidio-task-management-backend.onrender.com/admin/users/${email}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://zidio-task-management-backend.onrender.com/admin/users/${email}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (!res.ok) throw new Error("Failed to delete user");
 
@@ -251,7 +269,9 @@ const ManageUsers = () => {
             </tbody>
           </table>
 
-          {users.length === 0 && <p className="text-gray-500 text-center mt-4">No users found.</p>}
+          {users.length === 0 && (
+            <p className="text-gray-500 text-center mt-4">No users found.</p>
+          )}
         </div>
       </div>
     </div>
